@@ -12,6 +12,27 @@ class _MyWidgetState extends State<HomeScreen> {
 String _searchQuery = '';
 final TextEditingController _searchController = TextEditingController();
 
+final List<String> _items = [
+    'Apple',
+    'Banana',
+    'Orange',
+    'Grapes',
+    'Mango',
+    'Pineapple',
+    'Strawberry',
+    'Watermelon',
+  ];
+
+  List<String> get _filteredItems {
+    if(_searchQuery.isEmpty) {
+      return _items;
+    } else {
+      return _items.where((item) => item.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
+    }
+  }
+
+  
+
 @override
 void dispose() {
     _searchController.dispose();
@@ -66,13 +87,30 @@ void dispose() {
             const SizedBox(height: 16.0),
 
             Align(
+            
               alignment: Alignment.centerLeft,
-              child: Text(
-                '0 items found for "$_searchQuery"',
+              child: Visibility(
+                visible: _searchQuery.isNotEmpty && _filteredItems.isNotEmpty,
+                child: Text('${_filteredItems.length} items found for "$_searchQuery"',
                 style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+              ),
+            
               )
+            ),
+
+            const SizedBox(height: 16.0),
+
+            Expanded(child: _filteredItems.isNotEmpty? 
+            ListView.builder(itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(_filteredItems[index]),
+              );
+            },
+            itemCount: _filteredItems.length)
+            : Center(child: Text('No items found for "$_searchQuery"'),)
             )
           ]
+        
         )
         // child: Text('Hello World', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black),),
       ),
