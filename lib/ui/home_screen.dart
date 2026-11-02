@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:learn_flutter/models/user.dart';
-import 'package:learn_flutter/ui/home_drawer.dart';
+import 'package:learn_flutter/data/models/user.dart';
+import 'package:learn_flutter/features/home/ui/home_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
   const new({super.key});
