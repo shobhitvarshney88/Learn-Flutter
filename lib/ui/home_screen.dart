@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:learn_flutter/models/user.dart';
 import 'package:learn_flutter/ui/home_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -18,25 +19,14 @@ class _MyWidgetState extends State<HomeScreen> {
   var url = "https://fake-json-api.mock.beeceptor.com/users";
   var data;
 
-  final List<String> _items = [
-    'Apple',
-    'Banana',
-    'Orange',
-    'Grapes',
-    'Mango',
-    'Pineapple',
-    'Strawberry',
-    'Watermelon',
-  ];
-
-  List<String> get _filteredItems {
+  List<User> get _filteredItems {
     if (_searchQuery.isEmpty) {
-      return _items;
+      return data.map<User>((item) => User.fromJson(item)).toList();
     } else {
-      return _items
-          .where(
-            (item) => item.toLowerCase().contains(_searchQuery.toLowerCase()),
-          )
+      return data
+          .where((item) =>
+              (item['name'] as String).toLowerCase().contains(_searchQuery.toLowerCase()))
+          .map<User>((item) => User.fromJson(item))
           .toList();
     }
   }
@@ -126,14 +116,14 @@ class _MyWidgetState extends State<HomeScreen> {
             const SizedBox(height: 16.0),
 
             Expanded(
-              child: data.isNotEmpty
+              child: _filteredItems.isNotEmpty
                   ? ListView.builder(
                       itemBuilder: (context, index) {
                         return ListTile(
-                          title: Text(data[index]['name']),
-                          subtitle: Text(data[index]['email']),
+                          title: Text(_filteredItems[index].name),
+                          subtitle: Text(_filteredItems[index].email), // Replace with actual email if available
                           leading: Image.network(
-                            data[index]['photo'],
+                            _filteredItems[index].photo, // Replace with actual avatar URL if available
                             width: 50,
                             height: 50,
                             webHtmlElementStrategy: WebHtmlElementStrategy.fallback,
@@ -143,7 +133,7 @@ class _MyWidgetState extends State<HomeScreen> {
                           ), // Display the avatar image
                         );
                       },
-                      itemCount: data.length,
+                      itemCount: _filteredItems.length,
                     )
                   : Center(child: Text('No items found for "$_searchQuery"')),
             ),
